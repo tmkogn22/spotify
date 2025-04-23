@@ -60,6 +60,3 @@ class CompositionGenreAssociation(Base):
 
     composition = relationship('Composition', back_populates='genres')
     genre = relationship('Genre', back_populates='compositions')
-
-
-
