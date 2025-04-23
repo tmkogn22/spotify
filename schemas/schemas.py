@@ -93,3 +93,56 @@ class Composition(CompositionBase):
 
     class Config:
         from_attributes = True
+
+
+class FavoriteCompositionBase(BaseModel):
+    composition_id: int
+    user_id: int
+
+
+class FavoriteCompositionCreate(BaseModel):
+    composition_id: int
+
+
+class FavoriteComposition(FavoriteCompositionBase):
+    class Config:
+        from_attributes = True
+
+
+class PlaylistBase(BaseModel):
+    name: str
+
+
+class PlaylistCreate(PlaylistBase):
+    pass
+
+
+class Playlist(PlaylistBase):
+    id: int
+    user_id: int
+
+    class Config:
+        from_attributes = True
+
+
+class PlaylistCompositionBase(BaseModel):
+    playlist_id: int
+    composition_id: int
+
+
+class PlaylistCompositionCreate(PlaylistCompositionBase):
+    pass
+
+
+class PlaylistComposition(PlaylistCompositionBase):
+    class Config:
+        from_attributes = True
+
+
+class PlaylistWithCompositions(PlaylistBase):
+    id: int
+    user_id: int
+    compositions: List[Composition]
+
+    class Config:
+        from_attributes = True

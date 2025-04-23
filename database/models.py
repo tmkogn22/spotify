@@ -11,6 +11,9 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False)
 
+    playlists = relationship('Playlist', back_populates='user')
+    favorite_compositions = relationship('Favorites', back_populates='user')
+
 
 class Artist(Base):
     __tablename__ = 'artists'
@@ -50,6 +53,7 @@ class Composition(Base):
 
     album = relationship('Album', back_populates='compositions')
     genres = relationship('CompositionGenreAssociation', back_populates='composition')
+    liked = relationship('Favorites', back_populates='composition')
 
 
 class CompositionGenreAssociation(Base):
@@ -60,3 +64,36 @@ class CompositionGenreAssociation(Base):
 
     composition = relationship('Composition', back_populates='genres')
     genre = relationship('Genre', back_populates='compositions')
+
+
+class Playlist(Base):
+    __tablename__ = 'playlists'
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+
+    user = relationship('User', back_populates='playlists')
+    compositions = relationship('CompositionPlaylistAssociation', back_populates='playlist')
+
+
+class CompositionPlaylistAssociation(Base):
+    __tablename__ = 'composition_playlist_m2m'
+
+    playlist_id = Column(Integer, ForeignKey('playlists.id'), nullable=False, primary_key=True)
+    composition_id = Column(Integer, ForeignKey('compositions.id'), nullable=False, primary_key=True)
+
+    playlist = relationship('Playlist', back_populates='compositions')
+    composition = relationship('Composition')
+
+
+class Favorites(Base):
+    __tablename__ = 'favorites'
+
+    user_id = Column(Integer, ForeignKey('users.id'), primary_key=True, nullable=False)
+    composition_id = Column(Integer, ForeignKey('compositions.id'), primary_key=True, nullable=False)
+
+    user = relationship('User', back_populates='favorite_compositions')
+    composition = relationship('Composition', back_populates='liked')
+
+
